@@ -1,3 +1,4 @@
+********************************************************************Begin************************************************************************************************
 Ce programme en un exemple simple d’un microservice  « microcommerce » contenant une seule entité « Product », basé sur un projet de commerce en ligne.
 
 #Importation du projet.
@@ -29,4 +30,5 @@ clic droit sur MicrocommerceApplicationTests.java-->Run As JUnit Test
 
 #Dépendances
 Le fichier pom.xml contient toutes les dépendances maven du projet
+*******************************************************************END*****************************************************************************************************
 
