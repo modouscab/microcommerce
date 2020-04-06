@@ -13,7 +13,6 @@ pool:
 
 steps:
 - task: Maven@3
-  echo 'je suis dans la tache Maven'
   displayName: 'Maven pom.xml'
   inputs:
     mavenPomFile: 'pom.xml'
@@ -27,7 +26,6 @@ steps:
     goals: 'clean package'
 
 - task: CopyFiles@2
-  echo 'je suis dans la tache copie du jar'
   displayName: 'Copy Files to: $(build.artifactstagtagingdirectory)'
   inputs:
     SourceFolder: '$(system.defaultworkingdirectory)'
@@ -36,7 +34,6 @@ steps:
   condition: succeededOrFailed()
 
 - task: PublishBuildArtifacts@1
-  echo 'je suis dans la tache publication'
   displayName: 'Publish Artifact: drop'  
   inputs:
     PathtoPublish: '$(build.artifactstagtagingdirectory)'
