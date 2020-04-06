@@ -1,3 +1,4 @@
+[![Build Status](https://dev.azure.com/ModouNdiaye0208/microcommerce/_apis/build/status/modouscab.microcommerce?branchName=master)](https://dev.azure.com/ModouNdiaye0208/microcommerce/_build/latest?definitionId=1&branchName=master)
 ********************************************************************Begin************************************************************************************************
 Ce programme en un exemple simple d’un microservice  « microcommerce » contenant une seule entité « Product », basé sur un projet de commerce en ligne.
 
