@@ -10,10 +10,13 @@ pool:
   #vmImage: 'ubuntu-latest' # other options: 'macOS-10.14', 'vs2017-win2016'
   vmImage: 'ubuntu-16.04' 
   demands: maven
+  
+variables:
+  imageName: 'pipelines-javascript-docker'
 
 steps:
 - task: Maven@3
-  displayName: 'Maven pom.xml'
+  displayName: 'Build maven and Tests'
   inputs:
     mavenPomFile: 'pom.xml'
     codeCoverageToolOption: Cobertura
@@ -26,7 +29,7 @@ steps:
     goals: 'clean package'
 
 - task: CopyFiles@2
-  displayName: 'Copy Files to: $(build.artifactstagtagingdirectory)'
+  displayName: 'Copie jar to: $(build.artifactstagtagingdirectory)'
   inputs:
     SourceFolder: '$(system.defaultworkingdirectory)'
     Contents: '**/*.jar'
@@ -38,3 +41,45 @@ steps:
   inputs:
     PathtoPublish: '$(build.artifactstagtagingdirectory)'
   condition: succeededOrFailed()
+  
+- stage: Build
+  displayName: Build and push stage
+  jobs:  
+  - job: Build
+    displayName: Build job
+    pool:
+      vmImage: $(vmImageName)
+    steps:
+    - task: Docker@2
+      displayName: Build and push an image to container registry
+      inputs:
+        command: buildAndPush
+        repository: $(imageRepository)
+        dockerfile: $(dockerfilePath)
+        containerRegistry: $(dockerRegistryServiceConnection)
+        tags: |
+          $(tag)
+
+#*************************************End build docker image****************************
+steps:
+- task: Docker@2
+  displayName: Build an image
+  inputs:
+    repository: $(imageName)
+    command: build
+    Dockerfile: app/Dockerfile
+#*************************************End build docker image****************************
+pool:
+  #vmImage: 'ubuntu-latest' # other options: 'macOS-10.14', 'vs2017-win2016'
+  vmImage: 'ubuntu-16.04' 
+  demands: maven 
+steps:
+  task: Package  
+  displayName: 'Containerization'
+script:
+  - apk add --no-cache docker
+  - docker login mcroservicecontainerregistry.azurecr.io -u $(acrusername) -p $(acrpassword)
+  - docker tag nginx mcroservicecontainerregistry.azurecr.io/samples/nginx
+  - docker build --pull -t $IMAGE_TAG .
+  - docker push $IMAGE_TAG
+ image: openjdk:8-alpine
